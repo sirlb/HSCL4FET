@@ -49,8 +49,6 @@ def load_vocab_file(filename):
 
 
 def truncate_sequences(sequences, maxlen):
-    """截断总长度至不超过maxlen
-    """
     left_context_tokens,word_tokens,right_context_tokens = sequences
     seq_len = len(left_context_tokens) + len(word_tokens) + len(right_context_tokens) + len(word_tokens) + 3
     if seq_len > maxlen:
@@ -158,7 +156,7 @@ class DataBatchLoader:
             batch_beg, batch_end = batch_idx * self.batch_size,   \
                                    min((batch_idx + 1) * self.batch_size, self.n_samples)
             batch_data = self.samples[batch_beg:batch_end]
-            # 每一轮开始前打乱
+            #  
             if batch_beg == self.n_samples and self.shuffle: 
                 random.shuffle(self.samples)
 
@@ -213,11 +211,10 @@ class DataBatchLoader:
                     
                     }
             )
-        # 对比数据
-        # 1.细粒度对比
+        # 1.
         data = self.fine_grained_contrastive_collect_fn(batch_labels)
         batch_data_dict.update(data)
-        # 2.粗粒度对比
+        # 2. 
         data = self.coarse_grained_contrastive_collect_fn(batch_labels)
         batch_data_dict.update(data)
         #print(batch_token_type_ids.shape)
@@ -244,7 +241,7 @@ class DataBatchLoader:
                 entity_label = remove_entity(entity_label,remove_entity_index) 
                 entity_label_id = [self.type2id[label] for label in entity_label]
                 pos_pairs, neg_pairs = pos_neg_pairs(entity_label_id)
-                # 至少有两个细粒度，其中一个粒度大于等于2
+                #  
                 if len(set(entity_label)) < 2 and len(entity_label) == len(set(entity_label)):   
                     continue
                     
@@ -291,7 +288,7 @@ class DataBatchLoader:
                         if len(sub_label) >= type_index: 
                             entity_index.append(i)
                             entity_label.append('/'.join(sub_label[:type_index]))
-                            #entity_label.append(label)
+                            
                             
                 remove_entity_index = sum([v for i,v in get_same_index(entity_index).items()],[])
                 entity_index = remove_entity(entity_index,remove_entity_index)
@@ -299,7 +296,7 @@ class DataBatchLoader:
                 entity_label_id = [self.type2id[label] for label in entity_label]
                 pos_pairs, neg_pairs = pos_neg_pairs(entity_label_id)
                 
-                # 至少有两个粗粒度，其中一个粒度大于等于2
+                #  
                 if len(set(entity_label)) < 2 and len(entity_label) == len(set(entity_label)):   
                     entity_index = []
                     entity_label = []
