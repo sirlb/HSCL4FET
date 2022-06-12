@@ -584,7 +584,7 @@ def train():
                     
 
 eval_interval = 50
-batch_size = 10
+batch_size = 96
 eval_batch_size = 192
 lr_decay = 0.5
 w_decay = 0.01
