@@ -4,17 +4,10 @@ import json
 import random
 import numpy as np
 import torch
-import torch.nn as nn
-from transformers import get_cosine_schedule_with_warmup
 
 import argparse
-import accelerate
-import time
-
 from model import EntityTypingModel
 from data_loader import DataBatchLoader,load_data,load_vocab_file,data_path
-
-
 
 def set_seed(seed=None):
     def __set_seed__(seed):
@@ -121,7 +114,7 @@ def get_contrastive_label():
             coarse_grained_label.append(label)
             
     participate_fine_grained_contrastive_label = []
-    participate_coarse_grained_contrastive_label = [] # 参与粗粒度对比的标签
+    participate_coarse_grained_contrastive_label = []  
     batch_iter = DataBatchLoader(train_data, batch_size, n_iter=1,
                                  type2id=type2id,
                                  tokenizer=tokenizer,
@@ -177,14 +170,13 @@ class Evaluate():
         no_participate_coarse_grained_contrastive_label = contrastive_label.get('no_participate_coarse_grained_contrastive_label')
     
         
-        
         model.eval()
         gp_tups = list()
         for batch in batch_iter:
             with torch.no_grad():
                 logits_batch = model(batch)
-            logits_batch = logits_batch.data.cpu().numpy() # 预测
-            batch_label_src = batch.get('batch_label_src') # 真实
+            logits_batch = logits_batch.data.cpu().numpy()  
+            batch_label_src = batch.get('batch_label_src') 
             for i, logits in enumerate(logits_batch):
                 idxs = np.squeeze(np.argwhere(logits > 0), axis=1)
                 if len(idxs) == 0:
@@ -212,9 +204,6 @@ class Evaluate():
                 gp_tups.append((batch_label_src[i], idxs))
           
           
-        
-        
-        
         gp_fine_grained_label = []  
         gp_coarse_grained_label = []  
         
@@ -487,9 +476,7 @@ def train():
                 test_total_metrics['micro_precision'],test_total_metrics['micro_recall'],test_total_metrics['micro_f1']
                 
         
-            
 
-            
             if selection_model_criteria == 'dev':
                 if evaluation_metric == 'strict_f1':
                     if best_val_strict_f1 < val_strict_f1:
@@ -611,8 +598,8 @@ parser.add_argument('-rs', '--rand_seed', type=int,default=83029)
 parser.add_argument('-mb', '--model_backbone', default='bert-large-cased')
 parser.add_argument('-ci', '--cuda_id', default='1')
 parser.add_argument('-epoch', '--epochs',type=int,default=20)
-parser.add_argument('-eval_metric', '--evaluation_metric', default='macro_f1') # 评价指标类型
-parser.add_argument('-eet', '--entity_embedding_type', default='ENTITY') # 实体表示类型
+parser.add_argument('-eval_metric', '--evaluation_metric', default='macro_f1') 
+parser.add_argument('-eet', '--entity_embedding_type', default='ENTITY')  
 parser.add_argument('-fgt', '--fine_grained_type', default='same_coarse_grained_calculate')
 parser.add_argument('-cgt', '--coarse_grained_type', default='all')
 parser.add_argument('-smc', '--selection_model_criteria', default='test')
