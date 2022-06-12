@@ -158,9 +158,7 @@ class Evaluate():
     
     def __init_(self):
         self.metrics = Metrics()
- 
-        
-        
+
     def evaluate(self, model, batch_iter):
         fine_grained_label = contrastive_label.get('fine_grained_label')
         coarse_grained_label = contrastive_label.get('coarse_grained_label')
@@ -278,8 +276,6 @@ class Evaluate():
                             pre_no_participate_coarse_grained_contrastive_label
                         )
                     )
-                
-          
             
         metrics = dict()
         
@@ -429,8 +425,7 @@ class Evaluate():
         return metrics
                   
 def train():
-    
-    
+
     step = 0
     best_val_strict_f1 = 0
     best_val_macro_f1 = 0
@@ -452,9 +447,6 @@ def train():
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-        
-        
-        print(loss)
         
         if step % eval_interval == 0:
             val_metrics = eval_fnc.evaluate(model,  dev_batch_iter)
@@ -591,7 +583,7 @@ w_decay = 0.01
 temperature = 0.1 
 post_process = False
 
-parser = argparse.ArgumentParser("参数")
+parser = argparse.ArgumentParser()
 parser.add_argument('-lr', '--learing_rate', type=float,default=1e-5)
 parser.add_argument('-ds', '--dataset', default='ontonote')
 parser.add_argument('-rs', '--rand_seed', type=int,default=83029)
